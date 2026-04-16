@@ -1,50 +1,44 @@
-
 pipeline {
-    agent any
+    agent any  // Use any available agent
 
     tools {
-        maven 'Maven_Test1'
+        maven 'MAVEN'  // Ensure this matches the name configured in Jenkins
     }
-
     stages {
-
-        // ❗ REMOVE manual checkout (Jenkins already does it)
-        // If you still want manual control, fix branch to 'master'
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/vikas-1421/Maven_Test1.git'
+            }
+        }
 
         stage('Build') {
             steps {
-                sh 'mvn clean package'
+                sh 'mvn clean package'  // Run Maven build
             }
         }
 
         stage('Test') {
             steps {
-                sh 'mvn test'
+                sh 'mvn test'  // Run unit tests
             }
         }
 
-        stage('Archive') {
-            steps {
-                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
-            }
-        }
-
+        
+        
+       
         stage('Run Application') {
             steps {
-                sh '''
-                if pgrep -f MyMavenApp.jar; then
-                    echo "App already running"
-                else
-                    nohup java -jar target/*.jar > app.log 2>&1 &
-                fi
-                '''
+                // Start the JAR application
+                sh ' mvn exec:java -Dexec.mainClass="com.example.App"'
             }
         }
+
+        
     }
 
     post {
         success {
-            echo 'Build successful!'
+            echo 'Build and deployment successful!'
         }
         failure {
             echo 'Build failed!'
