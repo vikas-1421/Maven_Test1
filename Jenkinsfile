@@ -2,7 +2,7 @@ pipeline {
     agent any  // Use any available agent
 
     tools {
-        maven 'MAVEN'  // Ensure this matches the name configured in Jenkins
+        maven 'MyMaven'  // Ensure this matches the name configured in Jenkins
     }
     stages {
         stage('Checkout') {
